@@ -1,0 +1,32 @@
+-- DROP PROCEDURE public.crud_clientes(varchar, int4, varchar, varchar);
+
+CREATE OR REPLACE PROCEDURE public.crud_clientes(IN p_acao character varying, IN p_id integer, IN p_nome character varying, IN p_cidade character varying)
+ LANGUAGE plpgsql
+AS $procedure$
+declare
+rec record;
+BEGIN
+ if (p_acao = 'C') then
+  insert into clientes (id, nome, cidade) values (p_id, p_nome, p_cidade);
+  raise notice 'cadastrado com sucesso!';
+ elseif (p_acao = 'L' and p_id is null) then
+  FOR rec IN (SELECT  * FROM Clientes)
+  loop
+   raise notice 'id: % nome: % cidade: %', rec.id, rec.nome, rec.cidade;
+  end loop;
+ elseif (p_acao = 'L' and p_id is not null) then
+	FOR rec in (select * from clientes where id = p_id)
+	loop
+  raise notice 'id: % nome: % cidade: %', rec.id, rec.nome, rec.cidade;
+	end loop;
+ elseif (p_acao = 'A') then
+  update clientes set nome = p_nome, cidade = p_cidade where id = p_id;
+  raise notice 'alterar';
+ elseif (p_acao = 'E') then
+  delete from pedidos where clienteid = p_id; -- dependencia
+  delete from clientes where id = p_id; -- pai
+  raise notice 'excluir';
+ end if;
+END;
+$procedure$
+;
