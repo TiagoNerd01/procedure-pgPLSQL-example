@@ -8,12 +8,12 @@ create table produtos (
 	estoque int,
 	constraint pk_id_produtos PRIMARY KEY (id)
 );
-create table venda(
-	id int,
-	produto_id int not null,
-	quantidade int,
-	valor_total numeric(10,2),
-	data_venda date,
-	constraint pk_id_venda PRIMARY KEY (id),
-	foreign key (produto_id) references produtos(id)
+
+CREATE TABLE venda (
+    id SERIAL PRIMARY KEY,
+    produto_id INT NOT NULL,
+    quantidade INT,
+    valor_total NUMERIC(10,2),
+    data_venda DATE,
+    FOREIGN KEY (produto_id) REFERENCES produtos(id)
 );
